@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload CSV - QR Code Generator</title>
+    <script>
+        // Auto-download ZIP file if available
+        window.onload = function () {
+            const zipUrl = "{{ zip_url }}";
+            if (zipUrl) {
+                const anchor = document.createElement('a');
+                anchor.href = zipUrl;
+                anchor.download = "qr_codes.zip";
+                anchor.click();
+            }
+        };
+    </script>
+</head>
+<body>
+    <h1>QR Code Generator</h1>
+    <p>Download the sample CSV file, fill in the required details, and upload it here.</p>
+    
+    <a href="{% url 'download_sample_csv' %}">Download Sample CSV</a>
+    <hr>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="csv_file">Upload CSV File:</label>
+        <input type="file" name="csv_file" id="csv_file" required>
+        <button type="submit">Generate QR Codes</button>
+    </form>
+
+    {% if success %}
+    <hr>
+    <h2>QR codes generated successfully!</h2>
+    <p>The download should start automatically, or <a href="{{ zip_url }}">click here to download manually</a>.</p>
+    {% endif %}
+</body>
+</html>

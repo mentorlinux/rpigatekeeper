@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        img {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f4f4f4;
+            border-radius: 5px;
+            display: inline-block;
+            text-align: left;
+            width: 80%;
+        }
+    </style>
+</head>
+<body>
+    <h1>QR Code Scanner</h1>
+    
+    <!-- Live Camera Feed -->
+    <div>
+        <h2>Live Camera Feed</h2>
+        <img src="{% url 'qr_scanner:video_feed' %}" alt="Live Video Feed" width="640" height="480">
+    </div>
+    
+    <!-- Scanned QR Codes -->
+    <div>
+        <h2>Scanned QR Codes</h2>
+        <ul id="scanned-data">
+            <!-- Scanned QR codes will be dynamically inserted here -->
+        </ul>
+    </div>
+
+    <script>
+        // Function to fetch scanned QR code data from the server
+        function fetchScannedData() {
+            fetch("{% url 'qr_scanner:get_scanned_data' %}")
+                .then(response => response.json())
+                .then(data => {
+                    const scannedDataList = document.getElementById('scanned-data');
+                    scannedDataList.innerHTML = ''; // Clear existing items
+
+                    if (data.scanned_data.length === 0) {
+                        scannedDataList.innerHTML = '<li>No QR codes scanned yet.</li>';
+                    } else {
+                        data.scanned_data.forEach(entry => {
+                            const listItem = document.createElement('li');
+                            listItem.innerHTML = `
+                                <strong>Bus Number:</strong> ${entry.bus_number} <br>
+                                <strong>Entry Time:</strong> ${entry.entry_time}
+                            `;
+                            scannedDataList.appendChild(listItem);
+                        });
+                    }
+                })
+                .catch(error => console.error('Error fetching scanned data:', error));
+        }
+
+        // Fetch data every 2 seconds
+        setInterval(fetchScannedData, 2000);
+
+        // Initial fetch on page load
+        fetchScannedData();
+    </script>
+</body>
+</html>

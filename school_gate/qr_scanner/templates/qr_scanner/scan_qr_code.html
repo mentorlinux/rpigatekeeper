@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QR Scanner</title>
+    <script>
+        let scannedList = [];
+
+        // Fetch scanned QR codes periodically
+        function fetchScannedData() {
+            fetch("{% url 'get_scanned_qr_codes' %}")
+                .then(response => response.json())
+                .then(data => {
+                    const listContainer = document.getElementById('scanned-list');
+                    listContainer.innerHTML = "";  // Clear the list
+                    scannedList = data;
+
+                    // Populate the list with scanned QR codes
+                    scannedList.forEach(item => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `Bus Number: ${item.bus_number}, Driver Name: ${item.driver_name}, Driver Number: ${item.driver_number}, Time: ${item.time}`;
+                        listContainer.appendChild(listItem);
+                    });
+                });
+        }
+
+        // Fetch data every 2 seconds
+        setInterval(fetchScannedData, 2000);
+    </script>
+</head>
+<body>
+    <h1>QR Scanner</h1>
+    <p>The camera feed is displayed above, and scanned QR codes are listed below.</p>
+
+    <hr>
+
+    <!-- Video Feed -->
+    <div>
+        <h3>Camera Feed</h3>
+        <video autoplay="true" id="camera-feed"></video>
+    </div>
+
+    <hr>
+
+    <!-- Scanned QR Codes -->
+    <div>
+        <h3>Scanned QR Codes</h3>
+        <ul id="scanned-list">
+            <!-- Populated dynamically -->
+        </ul>
+    </div>
+</body>
+</html>

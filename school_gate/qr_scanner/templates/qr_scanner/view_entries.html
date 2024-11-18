@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Entries with Video Feed</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        video {
+            border: 2px solid black;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bus Entries with Live Camera Feed</h1>
+
+    <!-- Live Camera Feed -->
+    <div>
+        <h2>Live Video Feed</h2>
+        <video autoplay muted playsinline width="640" height="480">
+            <source src="{% url 'video_feed' %}" type="multipart/x-mixed-replace; boundary=frame">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- Table of Bus Entries -->
+    <div>
+        <h2>Bus Entries</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Bus Number</th>
+                    <th>Driver Name</th>
+                    <th>Driver Number</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                <tr>
+                    <td>{{ entry.bus_number }}</td>
+                    <td>{{ entry.driver_name }}</td>
+                    <td>{{ entry.driver_number }}</td>
+                    <td>{{ entry.timestamp }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No entries found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
