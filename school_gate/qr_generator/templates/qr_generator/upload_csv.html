@@ -1,7 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload CSV - QR Code Generator</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">GateKeeper</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mynavbar">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/qr-scanner/live-feed/">Camera</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/qr-generator/upload-csv/">Create Pass</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-5 pt-5">
+        <h1 class="text-center">QR Code Generator</h1>
+        <p class="text-center">Download the sample CSV file, fill in the required details, and upload it here.</p>
+
+        <div class="text-center">
+            <a href="{% url 'download_sample_csv' %}" class="btn btn-primary">Download Sample CSV</a>
+        </div>
+        <hr>
+
+        <form method="post" enctype="multipart/form-data" class="text-center">
+            {% csrf_token %}
+            <label for="csv_file" class="form-label">Upload CSV File:</label>
+            <input type="file" name="csv_file" id="csv_file" required class="form-control w-50 mx-auto">
+            <button type="submit" class="btn btn-success mt-3">Generate QR Codes</button>
+        </form>
+
+        {% if success %}
+        <hr>
+        <div class="text-center">
+            <h2>QR codes generated successfully!</h2>
+            <p>The download should start automatically, or <a href="{{ zip_url }}">click here to download manually</a>.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
         // Auto-download ZIP file if available
         window.onload = function () {
@@ -14,25 +69,5 @@
             }
         };
     </script>
-</head>
-<body>
-    <h1>QR Code Generator</h1>
-    <p>Download the sample CSV file, fill in the required details, and upload it here.</p>
-    
-    <a href="{% url 'download_sample_csv' %}">Download Sample CSV</a>
-    <hr>
-
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <label for="csv_file">Upload CSV File:</label>
-        <input type="file" name="csv_file" id="csv_file" required>
-        <button type="submit">Generate QR Codes</button>
-    </form>
-
-    {% if success %}
-    <hr>
-    <h2>QR codes generated successfully!</h2>
-    <p>The download should start automatically, or <a href="{{ zip_url }}">click here to download manually</a>.</p>
-    {% endif %}
 </body>
 </html>
